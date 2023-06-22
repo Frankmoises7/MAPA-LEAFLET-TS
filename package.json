@@ -1,0 +1,56 @@
+{
+  "name": "leaflet-con-typescript",
+  "version": "1.0.0",
+  "description": "Proyectos con la librería Leaflet y Typescript paso a paso",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx parcel src/index.html",
+    "build": "npx parcel build src/index.html --public-url '.'",
+    "lint": "eslint . --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leaflet-maps-course/course-projects-from-scratch.git"
+  },
+  "keywords": [
+    "leaflet",
+    "typescript",
+    "maps",
+    "mapas",
+    "geojson",
+    "polyline",
+    "marker",
+    "points"
+  ],
+  "author": "Anartz Mugika Ledo <mugan86@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leaflet-maps-course/course-projects-from-scratch/issues"
+  },
+  "homepage": "https://github.com/leaflet-maps-course/course-projects-from-scratch#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "gpxparser": "^3.0.8",
+    "handlebars": "^4.7.7",
+    "hbs": "^4.2.0",
+    "leaflet": "^1.7.1",
+    "leaflet.markercluster": "^1.5.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22",
+    "typescript": "4.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/leaflet": "^1.7.5",
+    "@types/leaflet.markercluster": "^1.4.5",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "eslint": "^8.0.1",
+    "parcel-bundler": "^1.12.5"
+  }
+}
