@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx parcel src/index.html",
-    "build": "npx parcel build src/index.html --public-url './public/'",
+    "build": "npx parcel build src/index.html --out-dir src/public",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
