@@ -5,6 +5,9 @@
   min-height: 80vh;
   max-height: 80vh;
   height: 100%;
+  border: 10px solid rgb(0,123,255);
+  border-radius: 20px;
+  margin-bottom: 16px;
 }
 
 .leaflet-popup-content img, .leaflet-tooltip-pane img{
