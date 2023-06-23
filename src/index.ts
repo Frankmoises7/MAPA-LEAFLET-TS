@@ -1,36 +1,35 @@
-import { BiclycleMarkers } from './div-icon-mountain-peaks';
-import { Map, MarkerClusterGroup, marker } from 'leaflet';
+import { Map, MarkerClusterGroup, marker, icon} from 'leaflet';
 import 'leaflet.markercluster';
+import { Path } from 'leaflet';
 import { startMapTemplate } from './../assets/template/content';
 import { tileLayerSelect } from './../config/tile-layers/functions';
 import axios from 'axios';
 
 startMapTemplate(
-  document,
-  'n 2 - 18 - Proyecto final'
+  document
 );
 
 const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
 
 tileLayerSelect().addTo(mymap);
 
-function selectIconMarker() {
-  return BiclycleMarkers('black');
-}
-
-
 const markers = new MarkerClusterGroup();
 async function fetchData(): Promise<void> {
   try {
     const result = await axios.get('https://geobikesapi.onrender.com/api/talleres');
     const talleres = result.data;
-    console.log(talleres);
+
+    const defaultIcon = icon({
+      iconUrl: 'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/000000/external-bike-vacation-planning-cycling-tour-flaticons-lineal-color-flat-icons-2.png',
+      iconSize: [45, 45], // Tamaño del icono en píxeles
+      iconAnchor: [12, 12], // Punto de anclaje del icono en relación con su posición
+    });
+
     if (Array.isArray(talleres)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       talleres.forEach((taller: any) => {
-        const selectIcon = selectIconMarker();
         marker([taller.lat, taller.lon], {
-          icon: new selectIcon(),
+          icon: defaultIcon,
         })
           .addTo(markers)
           .bindPopup(
