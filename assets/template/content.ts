@@ -11,7 +11,7 @@ const contentHtml = (projectTile: string, nameLastname: string) => `
 
 export const startMapTemplate = (
     document: Document,
-    projectTile = 'Sección -  Título de Proyecto',
+    projectTile = 'GeoBikes App',
     nameLastname = 'Frank Islas',
 ) => {
   document.title = projectTile;
