@@ -1,4 +1,4 @@
-import { Map, MarkerClusterGroup, marker, icon } from 'leaflet';
+import { Map, Marker, MarkerClusterGroup,Icon, icon } from 'leaflet';
 import 'leaflet.markercluster';
 import { startMapTemplate } from './../assets/template/content';
 import { tileLayerSelect } from './../config/tile-layers/functions';
@@ -13,7 +13,47 @@ startMapTemplate(document);
 // <=========================== Inicializacion de MAPA =========================================>
 const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
 
-tileLayerSelect().addTo(mymap);
+// <=========================== Agregar el buscador al Mapa =========================================>
+const apiKey: string | undefined = process.env.GEOSEARCH_APIKEY;
+
+if (apiKey) {
+  const searchControl: Geosearch = new Geosearch({
+    position: 'topleft',
+    placeholder: 'Ingresa una dirección...',
+    useMapBounds: false,
+    providers: [
+      new ArcgisOnlineProvider({
+        apikey: apiKey,
+        nearby: {
+          lat: -33.8688,
+          lng: 151.2093,
+        },
+      }),
+    ],
+  });
+
+  searchControl.addTo(mymap);
+
+  // <=========================== Agregar PopUp a la ubicación encontrada en el buscador =========================================>
+  const results: L.LayerGroup = L.layerGroup().addTo(mymap);
+
+  searchControl.on('results', (data: { results: any[] }) => {
+    results.clearLayers();
+    for (let i = data.results.length - 1; i >= 0; i--) {
+      const marker = L.marker(data.results[i].latlng);
+
+      const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
+        Math.round(data.results[i].latlng.lat * 100000) / 100000
+      }`;
+
+      marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+
+      results.addLayer(marker);
+
+      marker.openPopup();
+    }
+  });
+}
 
 // <=========================== Funcion para Centrar la vista en mi ubicacion =========================================>
 function showUserLocationOnMap(): void {
@@ -22,13 +62,13 @@ function showUserLocationOnMap(): void {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        const userIcon = icon({
+        const userIcon: Icon = icon({
           iconUrl: 'https://img.icons8.com/3d-fluency/94/user-location.png',
           iconSize: [45, 45],
           iconAnchor: [12, 12],
         });
 
-        marker([latitude, longitude], {
+        const userMarker: Marker = new Marker([latitude, longitude], {
           icon: userIcon,
         })
           .addTo(markers)
@@ -58,9 +98,9 @@ async function fetchData(): Promise<void> {
       // Api
       'https://geobikesapi.onrender.com/api/talleres'
     );
-    const talleres = result.data;
+    const talleres: any[] = result.data;
 
-    const defaultIcon = icon({
+    const defaultIcon: Icon = icon({
       iconUrl:
         'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/000000/external-bike-vacation-planning-cycling-tour-flaticons-lineal-color-flat-icons-2.png',
       iconSize: [45, 45], // Tamaño del icono en píxeles
@@ -68,16 +108,17 @@ async function fetchData(): Promise<void> {
     });
 
     if (Array.isArray(talleres)) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      talleres.forEach((taller: any) => {
-        marker([taller.lat, taller.lon], {
+      talleres.forEach((taller) => {
+        const { lat, lon, name, direction, email } = taller;
+
+        const tallerMarker: Marker = new Marker([lat, lon], {
           icon: defaultIcon,
         })
           .addTo(markers)
           .bindPopup(
-            `<h5><b>${taller.name}</b></h5>
-                <p>${taller.direction}<br>
-                ${taller.email}</p>`,
+            `<h5><b>${name}</b></h5>
+                <p>${direction}<br>
+                ${email}</p>`,
             {
               offset: [11, 5],
             }
@@ -88,8 +129,7 @@ async function fetchData(): Promise<void> {
 
       //<======================== Centrar la vista en la localizacion de todos los talleres (descomentar para que funcione) ==========================================>
       /* mymap.fitBounds([
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ...talleres.map((taller: any) => [taller.lat, taller.lon] as [number, number]),
+        ...talleres.map((taller) => [taller.lat, taller.lon] as [number, number]),
       ]); */
 
       // <=========================== Centrar la vista en mi ubicacion =========================================>
@@ -103,45 +143,8 @@ async function fetchData(): Promise<void> {
 // LLAMADA A LA FUNCION TRAER DATOS
 fetchData();
 
-// <=========================== Agregar el buscado al Mapa =========================================>
+tileLayerSelect().addTo(mymap);
 
-const apiKey = process.env.GEOSEARCH_APIKEY;
-
-const searchControl = new Geosearch({
-  position: 'topleft',
-  placeholder: 'Ingresa una dirección...',
-  useMapBounds: false,
-  providers: [
-    new ArcgisOnlineProvider({
-      apikey: apiKey,
-      nearby: {
-        lat: -33.8688,
-        lng: 151.2093,
-      },
-    }),
-  ],
-});
-
-searchControl.addTo(mymap);
-
-// <=========================== Agregar PopUp a la ubicación encontrada en el buscador =========================================>
-const results = L.layerGroup().addTo(mymap);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-searchControl.on('results', (data: { results: string | any[] }) => {
-  results.clearLayers();
-  for (let i = data.results.length - 1; i >= 0; i--) {
-    const marker = L.marker(data.results[i].latlng);
-
-    const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
-      Math.round(data.results[i].latlng.lat * 100000) / 100000
-    }`;
-    marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
-
-    results.addLayer(marker);
-
-    marker.openPopup();
-  }
-});
 
 
 
