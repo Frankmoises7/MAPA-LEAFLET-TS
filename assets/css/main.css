@@ -4,6 +4,7 @@
 body {
   padding: 0;
   margin: 0;
+  background-color: #fff;
 }
 
 #map {
@@ -22,9 +23,6 @@ header {
 }
 
 
-/* stylelint-disable selector-list-comma-newline-after */
-
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Roboto', sans-serif;
 }
@@ -32,6 +30,7 @@ h1, h2, h3, h4, h5, h6 {
 .display-4 {
   font-size: 2.5rem;
 }
+
 @media (min-width: 768px) {
   .display-4 {
     font-size: 3rem;
@@ -83,9 +82,11 @@ h1, h2, h3, h4, h5, h6 {
 .blog-pagination {
   margin-bottom: 4rem;
 }
+
 .blog-pagination > .btn {
   border-radius: 2rem;
 }
+
 
 /*
  * Blog posts
@@ -93,25 +94,32 @@ h1, h2, h3, h4, h5, h6 {
 .blog-post {
   margin-bottom: 4rem;
 }
+
 .blog-post-title {
   margin-bottom: .25rem;
   font-size: 2.5rem;
 }
+
 .blog-post-meta {
   margin-bottom: 1.25rem;
-  color: #999;
+  color: #000000;
 }
 
 /*
  * Footer
  */
+
 .blog-footer {
   padding: 2.5rem 0;
-  color: #999;
+  color: #fff;
   text-align: center;
-  background-color: #f9f9f9;
+  background-color: #000000;
   border-top: .05rem solid #e5e5e5;
 }
 .blog-footer p:last-child {
   margin-bottom: 0;
+}
+
+.footer-link a {
+  text-decoration: none;
 }
