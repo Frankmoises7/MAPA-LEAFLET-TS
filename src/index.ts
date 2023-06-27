@@ -3,10 +3,11 @@ import 'leaflet.markercluster';
 import { startMapTemplate } from './../assets/template/content';
 import { tileLayerSelect } from './../config/tile-layers/functions';
 import axios from 'axios';
-import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
-import 'dotenv/config';
+import { Geosearch, ArcgisOnlineProvider } from 'esri-leaflet-geocoder';
+import dotenv from 'dotenv';
 
+dotenv.config();
 startMapTemplate(document);
 
 // <=========================== Inicializacion de MAPA =========================================>
@@ -14,57 +15,15 @@ const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
 
 tileLayerSelect().addTo(mymap);
 
-const apiKey = process.env.GEOSEARCH_APIKEY;
-
-const searchControl = Geocoding.geosearch({
-  position: "topright",
-  placeholder: "Enter an address or place e.g. 1 York St",
-  useMapBounds: false,
-
-  providers: [
-    Geocoding.arcgisOnlineProvider({
-      apikey: apiKey,
-      nearby: {
-        lat: -33.8688,
-        lng: 151.2093
-      }
-    })
-  ]
-
-}).addTo(mymap);
-
-const results = L.layerGroup().addTo(mymap);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-searchControl.on("results", (data: { results: string | any[]; }) => {
-  results.clearLayers();
-  for (let i = data.results.length - 1; i >= 0; i--) {
-    const marker = L.marker(data.results[i].latlng);
-
-    const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
-      Math.round(data.results[i].latlng.lat * 100000) / 100000
-    }`;
-    marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
-
-    results.addLayer(marker);
-
-    marker.openPopup();
-  }
-});
-
-
-
-
-
 // <=========================== Funcion para Centrar la vista en mi ubicacion =========================================>
-function showUserLocationOnMap() {
+function showUserLocationOnMap(): void {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      position => {
+      (position) => {
         const { latitude, longitude } = position.coords;
 
         const userIcon = icon({
-          iconUrl:
-            'https://img.icons8.com/3d-fluency/94/user-location.png',
+          iconUrl: 'https://img.icons8.com/3d-fluency/94/user-location.png',
           iconSize: [45, 45],
           iconAnchor: [12, 12],
         });
@@ -81,7 +40,7 @@ function showUserLocationOnMap() {
         // Centrar el mapa en la ubicación del usuario
         mymap.setView([latitude, longitude], 15);
       },
-      error => {
+      (error) => {
         console.log('Error al obtener la ubicación:', error.message);
       }
     );
@@ -109,7 +68,7 @@ async function fetchData(): Promise<void> {
     });
 
     if (Array.isArray(talleres)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
       talleres.forEach((taller: any) => {
         marker([taller.lat, taller.lon], {
           icon: defaultIcon,
@@ -133,7 +92,6 @@ async function fetchData(): Promise<void> {
         ...talleres.map((taller: any) => [taller.lat, taller.lon] as [number, number]),
       ]); */
 
-
       // <=========================== Centrar la vista en mi ubicacion =========================================>
       showUserLocationOnMap();
     }
@@ -142,12 +100,55 @@ async function fetchData(): Promise<void> {
   }
 }
 
-
+// LLAMADA A LA FUNCION TRAER DATOS
 fetchData();
 
+// <=========================== Agregar el buscado al Mapa =========================================>
+
+const apiKey = process.env.GEOSEARCH_APIKEY;
+
+const searchControl = new Geosearch({
+  position: 'topleft',
+  placeholder: 'Ingresa una dirección...',
+  useMapBounds: false,
+  providers: [
+    new ArcgisOnlineProvider({
+      apikey: apiKey,
+      nearby: {
+        lat: -33.8688,
+        lng: 151.2093,
+      },
+    }),
+  ],
+});
+
+searchControl.addTo(mymap);
+
+// <=========================== Agregar PopUp a la ubicación encontrada en el buscador =========================================>
+const results = L.layerGroup().addTo(mymap);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+searchControl.on('results', (data: { results: string | any[] }) => {
+  results.clearLayers();
+  for (let i = data.results.length - 1; i >= 0; i--) {
+    const marker = L.marker(data.results[i].latlng);
+
+    const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
+      Math.round(data.results[i].latlng.lat * 100000) / 100000
+    }`;
+    marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+
+    results.addLayer(marker);
+
+    marker.openPopup();
+  }
+});
 
 
-//FUNCION QUE FUNCIONA XD
+
+
+
+
+//FUNCION QUE FUNCIONA XD - PARA HACER TEST
 /* axios
   .get( 
     'https://raw.githubusercontent.com/leaflet-maps-course/resources/f790b7cc895a33979ea3dbede861da7eb26cad9d/south_basque_country_peaks.json'
