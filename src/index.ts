@@ -5,8 +5,7 @@ import { tileLayerSelect } from './../config/tile-layers/functions';
 import axios from 'axios';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
-import { GeosearchControl, ArcgisOnlineProvider } from 'leaflet-geosearch';
-
+import 'dotenv/config';
 
 startMapTemplate(document);
 
@@ -15,7 +14,7 @@ const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
 
 tileLayerSelect().addTo(mymap);
 
-const apiKey = "AAPKd3545a25fb184a6b88b37bbc39f3bafckzMf-UqXugJwfEowc0JboisMqlPIokptKpcIihMX6i8oey67aOllVl4yfGFo_Xpz";
+const apiKey = process.env.GEOSEARCH_APIKEY;
 
 const searchControl = Geocoding.geosearch({
   position: "topright",
