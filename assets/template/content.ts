@@ -6,7 +6,7 @@ const contentHtml = (projectTile: string, nameLastname: string) => `
     <span></span>  
 </div>
 
-<p id="attribution mt-02" class="text-center mt-02">Proyecto creado por <em>${nameLastname} </em> con la librería Leaflet y Typescript</p>
+<p id="attribution mt-02" class="text-center mt-02">Proyecto GeoBikes creado con Leaflet y Typescript</p>
 `;
 
 export const startMapTemplate = (
