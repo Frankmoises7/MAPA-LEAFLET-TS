@@ -3,14 +3,60 @@ import 'leaflet.markercluster';
 import { startMapTemplate } from './../assets/template/content';
 import { tileLayerSelect } from './../config/tile-layers/functions';
 import axios from 'axios';
+import * as Geocoding from 'esri-leaflet-geocoder';
+import * as L from 'leaflet';
+import { GeosearchControl, ArcgisOnlineProvider } from 'leaflet-geosearch';
+
 
 startMapTemplate(document);
 
+// <=========================== Inicializacion de MAPA =========================================>
 const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
 
 tileLayerSelect().addTo(mymap);
 
+const apiKey = "AAPKd3545a25fb184a6b88b37bbc39f3bafckzMf-UqXugJwfEowc0JboisMqlPIokptKpcIihMX6i8oey67aOllVl4yfGFo_Xpz";
 
+const searchControl = Geocoding.geosearch({
+  position: "topright",
+  placeholder: "Enter an address or place e.g. 1 York St",
+  useMapBounds: false,
+
+  providers: [
+    Geocoding.arcgisOnlineProvider({
+      apikey: apiKey,
+      nearby: {
+        lat: -33.8688,
+        lng: 151.2093
+      }
+    })
+  ]
+
+}).addTo(mymap);
+
+const results = L.layerGroup().addTo(mymap);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+searchControl.on("results", (data: { results: string | any[]; }) => {
+  results.clearLayers();
+  for (let i = data.results.length - 1; i >= 0; i--) {
+    const marker = L.marker(data.results[i].latlng);
+
+    const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
+      Math.round(data.results[i].latlng.lat * 100000) / 100000
+    }`;
+    marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+
+    results.addLayer(marker);
+
+    marker.openPopup();
+  }
+});
+
+
+
+
+
+// <=========================== Funcion para Centrar la vista en mi ubicacion =========================================>
 function showUserLocationOnMap() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -46,9 +92,12 @@ function showUserLocationOnMap() {
 }
 
 const markers = new MarkerClusterGroup();
+
+// <=========================== Funcion para traer los datos =========================================>
 async function fetchData(): Promise<void> {
   try {
     const result = await axios.get(
+      // Api
       'https://geobikesapi.onrender.com/api/talleres'
     );
     const talleres = result.data;
