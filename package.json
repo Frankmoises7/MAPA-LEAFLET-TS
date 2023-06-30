@@ -1,16 +1,12 @@
 {
   "name": "leaflet-con-typescript",
   "version": "1.0.0",
-  "description": "Proyectos con la librería Leaflet y Typescript paso a paso",
+  "description": "Proyectos con la librería Leaflet y Typescript",
   "main": "index.js",
   "scripts": {
     "dev": "npx parcel src/index.html",
     "build": "npx parcel build src/index.html --out-dir public",
     "lint": "eslint . --ext .ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/leaflet-maps-course/course-projects-from-scratch.git"
   },
   "keywords": [
     "leaflet",
@@ -22,12 +18,8 @@
     "marker",
     "points"
   ],
-  "author": "Anartz Mugika Ledo <mugan86@gmail.com>",
+  "author": "Frank Islas <frank.moises.dev@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/leaflet-maps-course/course-projects-from-scratch/issues"
-  },
-  "homepage": "https://github.com/leaflet-maps-course/course-projects-from-scratch#readme",
   "dependencies": {
     "@arcgis/core": "^4.27.6",
     "@types/esri-leaflet": "^2.1.9",

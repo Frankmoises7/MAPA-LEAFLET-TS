@@ -1,7 +1,7 @@
 import { Map, Marker, MarkerClusterGroup,Icon, icon } from 'leaflet';
 import 'leaflet.markercluster';
-import { startMapTemplate } from './../assets/template/content';
-import { tileLayerSelect } from './../config/tile-layers/functions';
+import { startMapTemplate } from '../../assets/template/content';
+import { tileLayerSelect } from '../../config/tile-layers/functions';
 import axios from 'axios';
 import * as L from 'leaflet';
 import { Geosearch, ArcgisOnlineProvider } from 'esri-leaflet-geocoder';
@@ -9,16 +9,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 startMapTemplate(document);
-
-
-// Referencia al botón Login
-const boton = document.getElementById('login');
-
-// Agrega un evento 'click' al botón
-boton.addEventListener('click', () => {
-  // Redirecciona al usuario a la URL deseada
-  window.location.href = 'https://geoback-test.onrender.com/auth/google';
-});
 
 // <=========================== Inicializacion de MAPA =========================================>
 const mymap = new Map('map').setView([-36.82699, -73.04977], 18);
@@ -154,6 +144,10 @@ async function fetchData(): Promise<void> {
 fetchData();
 
 tileLayerSelect().addTo(mymap);
+
+
+
+
 
 
 
